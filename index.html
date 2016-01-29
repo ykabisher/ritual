@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
-        <script src="phaser.min.js"></script>
+        <script src="phaser.js"></script>
     </head>
     <body>
 
@@ -11,21 +11,48 @@
 
     window.onload = function() {
 
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create });
-
+        var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        var logo;
+        var playerSprite;
         function preload () {
-
             game.load.image('logo', 'phaser.png');
+            game.load.image('character', 'assets/img/char.png');
 
         }
 
         function create () {
-
-            var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
+            logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
             logo.anchor.setTo(0.5, 0.5);
+            game.input.onDown.add(removeLogo, this);
 
+            playerSprite = game.add.sprite(game.world.centerX, game.world.centerY, 'character');
+            game.physics.enable(playerSprite, Phaser.Physics.ARCADE);
         }
 
+        function removeLogo () {
+            game.input.onDown.remove(removeLogo, this);
+            logo.kill();
+        }
+
+        function update() {
+
+            //  only move when you click
+            if (game.input.mousePointer.isDown)
+            {
+                //  400 is the speed it will move towards the mouse
+                game.physics.arcade.moveToPointer(playerSprite, 400);
+
+                //  if it's overlapping the mouse, don't move any more
+                if (Phaser.Rectangle.contains(playerSprite.body, game.input.x, game.input.y))
+                {
+                    playerSprite.body.velocity.setTo(0, 0);
+                }
+            }
+            else
+            {
+                playerSprite.body.velocity.setTo(0, 0);
+            }
+        }
     };
 
     </script>
