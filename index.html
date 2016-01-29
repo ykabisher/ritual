@@ -4,57 +4,164 @@
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
         <script src="phaser.js"></script>
+        <script src="levels.js"></script>
     </head>
     <body>
 
     <script type="text/javascript">
-
-    window.onload = function() {
-
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+        var game;
         var logo;
         var playerSprite;
+        var line1;
+
+        var contra;
+
+        var livingroom;
+
+        var bathDoor;
+        var bedDoor;
+        var salonDoor;
+        var kitchenDoor;
+        var door5;
+        var door6;
+
+        var fx;
+        var rightWall;
+    window.onload = function() {
+
+        game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
         function preload () {
             game.load.image('logo', 'phaser.png');
             game.load.image('character', 'assets/img/char.png');
 
+            game.load.image('door1', 'assets/img/door1.png');
+            game.load.image('door2', 'assets/img/door2.png');
+            game.load.image('door3', 'assets/img/door3.png');
+            game.load.image('door4', 'assets/img/door4.png');
+            game.load.image('door5', 'assets/img/door5.png');
+            game.load.image('door6', 'assets/img/door6.png');
+
+            game.load.image('livingroom', 'assets/img/livingroom.png');
+            game.load.audio('backgroundMusic', 'assets/sound/0002_mix2.mp3');
+
         }
 
         function create () {
+            game.stage.backgroundColor = "#4488AA";
+
             logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
             logo.anchor.setTo(0.5, 0.5);
-            game.input.onDown.add(removeLogo, this);
 
-            playerSprite = game.add.sprite(game.world.centerX, game.world.centerY, 'character');
-            game.physics.enable(playerSprite, Phaser.Physics.ARCADE);
+
+            game.input.onDown.add(removeLogoAndCreateLivingRoom, this);
+            fx = game.add.audio('backgroundMusic');
+            fx.play();
         }
 
-        function removeLogo () {
-            game.input.onDown.remove(removeLogo, this);
+        function removeLogoAndCreateLivingRoom () {
+            game.input.onDown.remove(removeLogoAndCreateLivingRoom, this);
             logo.kill();
+
+            createLivingRoom();
         }
 
+
+        function clearLivingRoom() {
+            bedDoor.kill();
+            playerSprite.kill();
+            bathDoor.kill();
+        }
         function update() {
 
-            //  only move when you click
-            if (game.input.mousePointer.isDown)
-            {
-                //  400 is the speed it will move towards the mouse
-                game.physics.arcade.moveToPointer(playerSprite, 400);
+            if (playerSprite) {
+                //  only move when you click
+                if (game.input.mousePointer.isDown)
+                {
+                    //  400 is the speed it will move towards the mouse
+                    game.physics.arcade.moveToPointer(playerSprite, 250);
 
-                //  if it's overlapping the mouse, don't move any more
-                if (Phaser.Rectangle.contains(playerSprite.body, game.input.x, game.input.y))
+                    //  if it's overlapping the mouse, don't move any more
+                    if (Phaser.Rectangle.contains(playerSprite.body, game.input.x, game.input.y))
+                    {
+                        playerSprite.body.velocity.setTo(0, 0);
+                    }
+                }
+                else
                 {
                     playerSprite.body.velocity.setTo(0, 0);
                 }
+
+                game.physics.arcade.collide(playerSprite, bedDoor, bedDoorCollisionHandler, null, this);
+                game.physics.arcade.collide(playerSprite, bathDoor, bathDoorCollisionHandler, null, this);
+                game.physics.arcade.collide(playerSprite, salonDoor, bathDoorCollisionHandler, null, this);
+                game.physics.arcade.collide(playerSprite, kitchenDoor, bathDoorCollisionHandler, null, this);
+                game.physics.arcade.collide(playerSprite, door5, bathDoorCollisionHandler, null, this);
+                game.physics.arcade.collide(playerSprite, door6, bathDoorCollisionHandler, null, this);
             }
-            else
-            {
-                playerSprite.body.velocity.setTo(0, 0);
-            }
+
+
+
+        }
+
+        function bedDoorCollisionHandler (player, door) {
+            clearLivingRoom();
+            initLevel1();
+        }
+        function bathDoorCollisionHandler (player, door) {
+            //game.stage.backgroundColor = '#992d2d';
         }
     };
 
+        function createLivingRoom() {
+            game.stage.backgroundColor = "#4488AA";
+
+            livingroom = game.add.sprite(game.world.centerX, game.world.centerY, 'livingroom');
+            livingroom.anchor.setTo(0.5, 0.5);
+
+            bathDoor = game.add.sprite(game.world.centerX, game.world.centerY, 'door1');
+            game.physics.enable(bathDoor, Phaser.Physics.ARCADE);
+            bathDoor.x=28;
+            bathDoor.y=285;
+            bathDoor.body.immovable = true;
+
+            bedDoor = game.add.sprite(game.world.centerX, game.world.centerY, 'door2');
+            game.physics.enable(bedDoor, Phaser.Physics.ARCADE);
+            bedDoor.x=92;
+            bedDoor.y=225;
+            bedDoor.body.immovable = true;
+
+            salonDoor = game.add.sprite(game.world.centerX, game.world.centerY, 'door3');
+            game.physics.enable(salonDoor, Phaser.Physics.ARCADE);
+            salonDoor.x=230;
+            salonDoor.y=143;
+            salonDoor.body.immovable = true;
+
+            kitchenDoor = game.add.sprite(game.world.centerX, game.world.centerY, 'door4');
+            game.physics.enable(kitchenDoor, Phaser.Physics.ARCADE);
+            kitchenDoor.x=381;
+            kitchenDoor.y=142;
+            kitchenDoor.body.immovable = true;
+
+            door5 = game.add.sprite(game.world.centerX, game.world.centerY, 'door5');
+            game.physics.enable(door5, Phaser.Physics.ARCADE);
+            door5.x=588;
+            door5.y=173;
+            door5.body.immovable = true;
+
+            door6 = game.add.sprite(game.world.centerX, game.world.centerY, 'door6');
+            game.physics.enable(door6, Phaser.Physics.ARCADE);
+            door6.x=678;
+            door6.y=310;
+            door6.body.immovable = true;
+
+            playerSprite = game.add.sprite(game.world.centerX, game.world.centerY, 'character');
+            game.physics.enable(playerSprite, Phaser.Physics.ARCADE);
+
+            game.world.bringToTop(playerSprite);
+
+
+
+        }
     </script>
 
     </body>
