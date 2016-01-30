@@ -44,17 +44,17 @@ var allObjects = {
         }
     },
     living: {
-        curtain: {
-            x: 280,
-            y: 382
+        picture: {
+            x: 672,
+            y: 281
         },
-        paper: {
+        pillow: {
             x: 542,
-            y: 348
+            y: 455
         },
-        paste: {
-            x: 692,
-            y: 414
+        table: {
+            x: 366,
+            y: 510
         }
     }
 };

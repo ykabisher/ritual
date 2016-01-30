@@ -40,6 +40,7 @@
         var backgroundFX;
         var roomMusicFX;
         var kitchenFX;
+        var droppingWaterFX;
 
         var rightWall;
 
@@ -48,7 +49,7 @@
         var life = 100;
         var inRoom = false;
 
-        //
+        //consoleconsoleconsoleconsoleconsoleconsole
         // when in room you have 10 clicks
         // if you click 10 times you get kicked out of the toom
         // the room is randomized
@@ -81,7 +82,6 @@
             game.load.audio('water', 'assets/sound/water_drippin.mp3');
             game.load.audio('cloth-1', 'assets/sound/cloth-1.mp3');
 
-
             preloadRooms();
 
         }
@@ -103,7 +103,7 @@
             {
                 if (inRoom) {
                     clicks+=1;
-                    console.log(clicks)
+                    //console.log(clicks)
                     if (clicks > 10) {
                         removeCurrentRoom();
                     }
@@ -139,7 +139,7 @@
                     removeCurrentRoom();
                 }
                 else {
-                    console.log('aaaaa');
+                    //console.log('aaaaa');
                 }
             }
 
@@ -188,34 +188,39 @@
             inRoom = true;
             roomMusicFX = game.add.audio('roomMusic');
             roomMusicFX.play();
+            roomMusicFX.loopFull(1);
             clearLivingRoom();
             initRoom("living", 2);
 
             kitchenFX = game.add.audio('cloth-1');
             kitchenFX.play();
+            kitchenFX.loopFull(1);
         }
         function kitchenDoorCollisionHandler () {
             inRoom = true;
             roomMusicFX = game.add.audio('roomMusic');
             roomMusicFX.play();
+            roomMusicFX.loopFull(1);
             clearLivingRoom();
             initRoom("bath", 2);
 
-            kitchenFX = game.add.audio('water');
-            kitchenFX.play();
+            droppingWaterFX = game.add.audio('water');
+            droppingWaterFX.play();
+            droppingWaterFX.loopFull(1);
         }
         function bedDoorCollisionHandler () {
             inRoom = true;
 
             roomMusicFX = game.add.audio('roomMusic');
             roomMusicFX.play();
+            roomMusicFX.loopFull(1);
 
             clearLivingRoom();
             initRoom("kitchen", 2);
 
             kitchenFX = game.add.audio('cloth-1');
             kitchenFX.play();
-            kitchenFX.loopFull(0.0);
+            kitchenFX.loopFull(1);
         }
 
         function bathDoorCollisionHandler (player, door) {
