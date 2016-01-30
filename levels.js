@@ -28,13 +28,28 @@ var allObjects = {
             x: 189,
             y: 479
         }
+    },
+    bath: {
+        curtain: {
+            x: 280,
+            y: 382
+        },
+        paper: {
+            x: 542,
+            y: 348
+        },
+        paste: {
+            x: 692,
+            y: 414
+        }
     }
 };
 var objects,
-objectNames,
-objectsArr = [],
-numOfFaults = 6,
-background;
+    objectNames,
+    objectsArr = [],
+    numOfFaults = 6,
+    background,
+    goBackZone;
 
 function preloadRooms () {
     //load objects images
@@ -44,7 +59,7 @@ function preloadRooms () {
             objectNames = Object.keys(allObjects[roomName]);
             roomObjects = allObjects[roomName];
             //load room background
-            game.load.image('background', 'assets/img/kitchen/background.jpg');
+            game.load.image("background", "assets/img/"+roomName+"/background.jpg");
             //load room objects
             objectNames.forEach(function(objName) {
                 if(roomObjects.hasOwnProperty(objName)) {
@@ -54,6 +69,8 @@ function preloadRooms () {
             });
         }
     });
+    // load back button
+    game.load.image("goBackZone", "assets/img/exit.png");
 }
 
 function initRoom (roomName) {
@@ -122,12 +139,27 @@ function create () {
         //game.physics.p2.createLockConstraint(obj.sprite.body, background);
         objectsArr.push(obj.sprite);
     });
+
+    // add goBack zone
+    goBackZone = game.add.sprite(0, 520, "goBackZone");
+    goBackZone.events.onInputOver.add(backHover, this);
+    goBackZone.events.onInputOut.add(removeBackHover, this);
+
     // add click listener
     game.input.onDown.add(click, this);
 }
 
+function backHover(){
+    console.log("out");
+}
+
+function removeBackHover(){
+    console.log("hover");
+}
+
 function click(pointer) {
-    var objectClicked = game.physics.p2.hitTest(pointer.position, objectsArr), objName;
+    var objectClicked = game.physics.p2.hitTest(pointer.position, objectsArr), objName,
+        goBackClicked = game.physics.p2.hitTest(pointer.position, goBackZone);
     // if hit
     if(objectClicked.length != 0) {
         objName = objectClicked[0].parent.sprite.key.split("_")[0];
@@ -141,6 +173,7 @@ function click(pointer) {
             console.log("success!");
         }
     }
+
 }
 
 function removeCurrentRoom () {
