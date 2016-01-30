@@ -42,6 +42,20 @@ var allObjects = {
             x: 692,
             y: 414
         }
+    },
+    living: {
+        curtain: {
+            x: 280,
+            y: 382
+        },
+        paper: {
+            x: 542,
+            y: 348
+        },
+        paste: {
+            x: 692,
+            y: 414
+        }
     }
 };
 var objects,
@@ -173,7 +187,8 @@ function click(pointer) {
         }
         // if objective
         if(objects[objName].objective) {
-            console.log("success!");
+            clicks-=1;
+
         }
     }
 

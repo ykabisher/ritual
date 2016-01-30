@@ -37,11 +37,14 @@
         var door5;
         var door6;
 
-        var fx;
+        var backgroundFX;
+        var roomMusicFX;
+        var kitchenFX;
+
         var rightWall;
 
         var level = 1;
-        var clicks = 10;
+        var clicks = 0;
         var life = 100;
         var inRoom = false;
 
@@ -72,8 +75,15 @@
             game.load.image('door6', 'assets/img/door6.png');
 
             game.load.image('livingroom', 'assets/img/livingroom.png');
-            game.load.audio('backgroundMusic', 'assets/sound/0002_mix2.mp3');
+            game.load.image('gameOver', 'assets/img/game_over.png');
+            game.load.audio('backgroundMusic', 'assets/sound/0001 mix_theme-01.mp3');
+            game.load.audio('roomMusic', 'assets/sound/0003 roomA.mp3');
+            game.load.audio('water', 'assets/sound/water_drippin.mp3');
+            game.load.audio('cloth-1', 'assets/sound/cloth-1.mp3');
+
+
             preloadRooms();
+
         }
 
         function create () {
@@ -84,8 +94,22 @@
 
 
             game.input.onDown.add(removeLogoAndCreateLivingRoom, this);
-            fx = game.add.audio('backgroundMusic');
-            fx.play();
+
+            backgroundFX = game.add.audio('backgroundMusic');
+            backgroundFX.play();
+           // game.stage.canvas.id = 'mainCanvas';
+            game.canvas.id = 'mainCanvas';
+            document.getElementById('mainCanvas').addEventListener('click', function()
+            {
+                if (inRoom) {
+                    clicks+=1;
+                    console.log(clicks)
+                    if (clicks > 10) {
+                        removeCurrentRoom();
+                    }
+                }
+            }, false);
+
         }
 
         function removeLogoAndCreateLivingRoom () {
@@ -148,11 +172,9 @@
 
                 game.physics.arcade.collide(playerSprite, bedDoor, bedDoorCollisionHandler, null, this);
                 game.physics.arcade.collide(playerSprite, kitchenDoor, kitchenDoorCollisionHandler, null, this);
+                game.physics.arcade.collide(playerSprite, door6, door6DoorCollisionHandler, null, this);
             }
 
-            var level = 1;
-            var clicks = 10;
-            var life = 100;
             if (clicks<=0) {
                 //todo: exit the room and randomize
             }
@@ -162,15 +184,38 @@
 
         }
 
+        function door6DoorCollisionHandler () {
+            inRoom = true;
+            roomMusicFX = game.add.audio('roomMusic');
+            roomMusicFX.play();
+            clearLivingRoom();
+            initRoom("living", 2);
+
+            kitchenFX = game.add.audio('cloth-1');
+            kitchenFX.play();
+        }
         function kitchenDoorCollisionHandler () {
             inRoom = true;
+            roomMusicFX = game.add.audio('roomMusic');
+            roomMusicFX.play();
             clearLivingRoom();
             initRoom("bath", 2);
+
+            kitchenFX = game.add.audio('water');
+            kitchenFX.play();
         }
         function bedDoorCollisionHandler () {
             inRoom = true;
+
+            roomMusicFX = game.add.audio('roomMusic');
+            roomMusicFX.play();
+
             clearLivingRoom();
             initRoom("kitchen", 2);
+
+            kitchenFX = game.add.audio('cloth-1');
+            kitchenFX.play();
+            kitchenFX.loopFull(0.0);
         }
 
         function bathDoorCollisionHandler (player, door) {
@@ -180,6 +225,7 @@
 
         function createLivingRoom() {
             inRoom = false;
+            clicks = 0;
             game.stage.backgroundColor = "#4488AA";
 
             livingroom = game.add.sprite(game.world.centerX, game.world.centerY, 'livingroom');
