@@ -1,10 +1,22 @@
 <!doctype html>
-<html>
+<html style="cursor: url('assets/img/pointer.png'), default;">
     <head>
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
         <script src="phaser.js"></script>
         <script src="levels.js"></script>
+        <script src="room1.js"></script>
+<style>
+    canvas {
+        left: calc(50% - 400px);
+        top:calc(50% - 300px);
+        position: absolute;
+
+    }
+    body {
+        background: black;
+    }
+</style>
     </head>
     <body>
 
@@ -32,7 +44,11 @@
         game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
         function preload () {
             game.load.image('logo', 'phaser.png');
-            game.load.image('character', 'assets/img/char.png');
+            game.load.image('up', 'assets/img/up.png');
+            game.load.image('right', 'assets/img/right.png');
+            game.load.image('left', 'assets/img/left.png');
+            game.load.script('filterX', 'https://cdn.rawgit.com/photonstorm/phaser/master/filters/BlurX.js');
+            game.load.script('filterY', 'https://cdn.rawgit.com/photonstorm/phaser/master/filters/BlurY.js');
 
             game.load.image('door1', 'assets/img/door1.png');
             game.load.image('door2', 'assets/img/door2.png');
@@ -43,7 +59,7 @@
 
             game.load.image('livingroom', 'assets/img/livingroom.png');
             game.load.audio('backgroundMusic', 'assets/sound/0002_mix2.mp3');
-
+            preloadRooms();
         }
 
         function create () {
@@ -70,6 +86,11 @@
             bedDoor.kill();
             playerSprite.kill();
             bathDoor.kill();
+            livingroom.kill();
+            door5.kill();
+            door6.kill();
+            salonDoor.kill();
+            kitchenDoor.kill();
         }
         function update() {
 
@@ -79,6 +100,14 @@
                 {
                     //  400 is the speed it will move towards the mouse
                     game.physics.arcade.moveToPointer(playerSprite, 250);
+
+                    if (Math.abs(game.input.x - playerSprite.body.x)<40) {
+                        playerSprite.loadTexture('up', 0);
+                    } else if ((game.input.x - playerSprite.body.x)<0) {
+                        playerSprite.loadTexture('left', 0);
+                    } else {
+                        playerSprite.loadTexture('right', 0);
+                    }
 
                     //  if it's overlapping the mouse, don't move any more
                     if (Phaser.Rectangle.contains(playerSprite.body, game.input.x, game.input.y))
@@ -105,7 +134,8 @@
 
         function bedDoorCollisionHandler (player, door) {
             clearLivingRoom();
-            initLevel1();
+            initRoom("kitchen");
+            //initLevel1();
         }
         function bathDoorCollisionHandler (player, door) {
             //game.stage.backgroundColor = '#992d2d';
@@ -126,8 +156,8 @@
 
             bedDoor = game.add.sprite(game.world.centerX, game.world.centerY, 'door2');
             game.physics.enable(bedDoor, Phaser.Physics.ARCADE);
-            bedDoor.x=92;
-            bedDoor.y=225;
+            bedDoor.x=101;
+            bedDoor.y=196;
             bedDoor.body.immovable = true;
 
             salonDoor = game.add.sprite(game.world.centerX, game.world.centerY, 'door3');
@@ -154,7 +184,7 @@
             door6.y=310;
             door6.body.immovable = true;
 
-            playerSprite = game.add.sprite(game.world.centerX, game.world.centerY, 'character');
+            playerSprite = game.add.sprite(game.world.centerX, game.world.centerY, 'up');
             game.physics.enable(playerSprite, Phaser.Physics.ARCADE);
 
             game.world.bringToTop(playerSprite);
