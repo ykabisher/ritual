@@ -39,6 +39,20 @@
 
         var fx;
         var rightWall;
+
+        var level = 1;
+        var clicks = 10;
+        var life = 100;
+        var inRoom = false;
+
+        //
+        // when in room you have 10 clicks
+        // if you click 10 times you get kicked out of the toom
+        // the room is randomized
+        // if you click on the obj the timer starts (20 sec per room) after the timer ends that room will be randomized
+        // if one of the rooms there is an obsession
+        //
+
     window.onload = function() {
 
         game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
@@ -63,7 +77,7 @@
         }
 
         function create () {
-            game.stage.backgroundColor = "#4488AA";
+           // game.stage.backgroundColor = "#4488AA";
 
             logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
             logo.anchor.setTo(0.5, 0.5);
@@ -94,6 +108,17 @@
         }
         function update() {
 
+            if (inRoom && game.input.y > 520)
+            {
+                if (game.input.mousePointer.isDown)
+                {
+                    removeCurrentRoom();
+                }
+                else {
+                    console.log('aaaaa');
+                }
+            }
+
             if (playerSprite) {
                 //  only move when you click
                 if (game.input.mousePointer.isDown)
@@ -118,31 +143,43 @@
                 else
                 {
                     playerSprite.body.velocity.setTo(0, 0);
+
                 }
 
                 game.physics.arcade.collide(playerSprite, bedDoor, bedDoorCollisionHandler, null, this);
-                game.physics.arcade.collide(playerSprite, bathDoor, bathDoorCollisionHandler, null, this);
-                game.physics.arcade.collide(playerSprite, salonDoor, bathDoorCollisionHandler, null, this);
-                game.physics.arcade.collide(playerSprite, kitchenDoor, bathDoorCollisionHandler, null, this);
-                game.physics.arcade.collide(playerSprite, door5, bathDoorCollisionHandler, null, this);
-                game.physics.arcade.collide(playerSprite, door6, bathDoorCollisionHandler, null, this);
+                game.physics.arcade.collide(playerSprite, kitchenDoor, kitchenDoorCollisionHandler, null, this);
             }
 
-
+            var level = 1;
+            var clicks = 10;
+            var life = 100;
+            if (clicks<=0) {
+                //todo: exit the room and randomize
+            }
+            if (life<=0) {
+                //todo: show game over
+            }
 
         }
 
-        function bedDoorCollisionHandler (player, door) {
+        function kitchenDoorCollisionHandler () {
+            inRoom = true;
             clearLivingRoom();
-            initRoom("kitchen");
-            //initLevel1();
+            initRoom("bath", 2);
         }
+        function bedDoorCollisionHandler () {
+            inRoom = true;
+            clearLivingRoom();
+            initRoom("kitchen", 2);
+        }
+
         function bathDoorCollisionHandler (player, door) {
             //game.stage.backgroundColor = '#992d2d';
         }
     };
 
         function createLivingRoom() {
+            inRoom = false;
             game.stage.backgroundColor = "#4488AA";
 
             livingroom = game.add.sprite(game.world.centerX, game.world.centerY, 'livingroom');

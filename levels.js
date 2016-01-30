@@ -46,8 +46,9 @@ var allObjects = {
 };
 var objects,
     objectNames,
+    currentRoomName,
     objectsArr = [],
-    numOfFaults = 6,
+    numOfFaults = 2,
     background,
     goBackZone;
 
@@ -59,7 +60,7 @@ function preloadRooms () {
             objectNames = Object.keys(allObjects[roomName]);
             roomObjects = allObjects[roomName];
             //load room background
-            game.load.image("background", "assets/img/"+roomName+"/background.jpg");
+            game.load.image(roomName+"_background", "assets/img/"+roomName+"/background.jpg");
             //load room objects
             objectNames.forEach(function(objName) {
                 if(roomObjects.hasOwnProperty(objName)) {
@@ -73,7 +74,9 @@ function preloadRooms () {
     game.load.image("goBackZone", "assets/img/exit.png");
 }
 
-function initRoom (roomName) {
+function initRoom (roomName, f) {
+    numOfFaults = f;
+    currentRoomName = roomName;
     objects = allObjects[roomName];
     objectNames = Object.keys(objects),
     create();
@@ -105,7 +108,7 @@ function preload () {
 
 function create () {
     var i, randIndex, allRand = [], reroll;
-    background = game.add.sprite(game.world.centerX, game.world.centerY, 'background');
+    background = game.add.sprite(game.world.centerX, game.world.centerY, currentRoomName+'_background');
     background.anchor.setTo(0.5, 0.5);
 
     game.physics.startSystem(Phaser.Physics.P2JS);

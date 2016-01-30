@@ -1,19 +1,20 @@
-    window.onload = function() {
+
+window.onload = function() {
 
         var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create }),
             objects = {
                 "r1o1": {
                     x: 100,
                     y: 100
-                }, 
+                },
                 "r1o2": {
                     x: 200,
                     y: 100
-                }, 
+                },
                 "r1o3": {
                     x: 300,
                     y: 100
-                }, 
+                },
                 "r1o4": {
                     x: 400,
                     y: 100
