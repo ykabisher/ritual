@@ -61,6 +61,7 @@ var allObjects = {
 var objects,
     objectNames,
     currentRoomName,
+    roomSoundName,
     objectsArr = [],
     numOfFaults = 2,
     background,
@@ -88,7 +89,8 @@ function preloadRooms () {
     game.load.image("goBackZone", "assets/img/exit.png");
 }
 
-function initRoom (roomName, f) {
+function initRoom (roomName, f, s) {
+    roomSoundName = s
     numOfFaults = f;
     currentRoomName = roomName;
     objects = allObjects[roomName];
@@ -114,9 +116,6 @@ function preload () {
             objects[objectNames[randIndex]].objective = true;
         }
     }
-
-
-    console.log(objects);
 
 }
 
@@ -164,6 +163,11 @@ function create () {
 
     // add click listener
     game.input.onDown.add(click, this);
+
+    //start sound
+    roomSoundFX = game.add.audio(roomSoundName);
+    roomSoundFX.play();
+    roomSoundFX.loopFull(1);
 }
 
 function backHover(){
@@ -188,7 +192,8 @@ function click(pointer) {
         // if objective
         if(objects[objName].objective) {
             clicks-=1;
-
+            roomSoundFX.stop();
+            console.log("success");
         }
     }
 

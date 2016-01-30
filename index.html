@@ -190,11 +190,7 @@
             roomMusicFX.play();
             roomMusicFX.loopFull(1);
             clearLivingRoom();
-            initRoom("living", 2);
-
-            kitchenFX = game.add.audio('cloth-1');
-            kitchenFX.play();
-            kitchenFX.loopFull(1);
+            initRoom("living", 2, 'cloth-1');
         }
         function kitchenDoorCollisionHandler () {
             inRoom = true;
@@ -202,11 +198,7 @@
             roomMusicFX.play();
             roomMusicFX.loopFull(1);
             clearLivingRoom();
-            initRoom("bath", 2);
-
-            droppingWaterFX = game.add.audio('water');
-            droppingWaterFX.play();
-            droppingWaterFX.loopFull(1);
+            initRoom("bath", 2, 'water');
         }
         function bedDoorCollisionHandler () {
             inRoom = true;
@@ -216,11 +208,7 @@
             roomMusicFX.loopFull(1);
 
             clearLivingRoom();
-            initRoom("kitchen", 2);
-
-            kitchenFX = game.add.audio('cloth-1');
-            kitchenFX.play();
-            kitchenFX.loopFull(1);
+            initRoom("kitchen", 2, 'cloth-1');
         }
 
         function bathDoorCollisionHandler (player, door) {
